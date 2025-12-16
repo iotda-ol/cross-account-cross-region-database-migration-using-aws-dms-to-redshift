@@ -1,0 +1,2 @@
+# cross-account-cross-region-database-migration-using-aws-dms-to-redshift
+This repository demonstrates a cross-account, cross-Region database migration using AWS Database Migration Service. Data is replicated from Amazon RDS for PostgreSQL to Amazon Redshift by deploying the DMS replication instance in the target AWS account and Region. Infrastructure is defined using Terraform following DEA-C01 best practices.
