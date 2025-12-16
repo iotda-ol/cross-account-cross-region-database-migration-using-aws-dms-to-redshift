@@ -25,7 +25,6 @@ resource "aws_redshift_cluster" "main" {
   automated_snapshot_retention_period = 7
   preferred_maintenance_window        = "sun:05:00-sun:06:00"
   skip_final_snapshot                 = true
-  final_snapshot_identifier           = null
 
   # Logging
   logging {
@@ -102,6 +101,26 @@ resource "aws_kms_key_policy" "redshift" {
             "kms:ViaService" = "redshift.${var.target_region}.amazonaws.com"
           }
         }
+      },
+      {
+        Sid    = "Allow S3 to use the key for logs"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "s3.${var.target_region}.amazonaws.com"
+          }
+        }
       }
     ]
   })
@@ -134,7 +153,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "redshift_logs" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.redshift.arn
     }
   }
 }

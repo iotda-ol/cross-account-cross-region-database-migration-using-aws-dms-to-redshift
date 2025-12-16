@@ -49,6 +49,8 @@ resource "aws_dms_endpoint" "source" {
     slot_name = "${replace(var.project_name, "-", "_")}_${var.environment}_slot"
 
     # Plugin for logical replication
+    # Note: pglogical is recommended for production. Requires PostgreSQL 9.4+ with pglogical extension.
+    # Alternative: Use "test_decoding" for PostgreSQL 9.4+ without additional extensions
     plugin_name = "pglogical"
   }
 

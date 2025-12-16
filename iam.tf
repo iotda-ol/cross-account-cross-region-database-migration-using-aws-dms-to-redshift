@@ -209,6 +209,8 @@ resource "aws_iam_role_policy" "redshift_s3_policy" {
 
 # Cross-Account Role in Target Account for Source Account Access
 # This role allows the source account to be accessed from the target account
+# Note: Using account root is acceptable for initial setup. For production with known specific roles,
+# replace the AWS principal with specific role ARNs and add ExternalId condition for additional security.
 resource "aws_iam_role" "cross_account_dms" {
   name = "${var.project_name}-${var.environment}-cross-account-dms-role"
 
@@ -228,6 +230,11 @@ resource "aws_iam_role" "cross_account_dms" {
         Principal = {
           AWS = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
         }
+        # Condition = {
+        #   StringEquals = {
+        #     "sts:ExternalId" = "unique-external-id-here"
+        #   }
+        # }
       }
     ]
   })

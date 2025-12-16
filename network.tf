@@ -144,8 +144,10 @@ resource "aws_security_group" "dms" {
   vpc_id      = aws_vpc.target.id
 
   # Egress to RDS PostgreSQL (source)
+  # Note: 0.0.0.0/0 is used because source RDS is in a different AWS account and potentially different region.
+  # For production, consider: VPC peering, PrivateLink, or replace with specific source VPC CIDR if known.
   egress {
-    description = "Allow outbound to RDS PostgreSQL"
+    description = "Allow outbound to RDS PostgreSQL in source account"
     from_port   = var.source_rds_port
     to_port     = var.source_rds_port
     protocol    = "tcp"
