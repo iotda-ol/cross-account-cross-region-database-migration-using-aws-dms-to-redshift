@@ -1,0 +1,51 @@
+# Example Terraform variables for dev environment
+# Copy this file to terraform.tfvars and update with your values
+
+project_name = "dms-migration"
+environment  = "dev"
+
+# Source Account Configuration
+source_account_id = "123456789012"  # Replace with your source AWS account ID
+source_region     = "us-east-1"
+
+# Target Account Configuration
+target_account_id = "098765432109"  # Replace with your target AWS account ID
+target_region     = "us-west-2"
+
+# Networking Configuration
+vpc_cidr               = "10.0.0.0/16"
+availability_zones     = ["us-west-2a", "us-west-2b"]
+public_subnet_cidrs    = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs   = ["10.0.11.0/24", "10.0.12.0/24"]
+database_subnet_cidrs  = ["10.0.21.0/24", "10.0.22.0/24"]
+
+# RDS PostgreSQL Configuration (Source)
+rds_instance_class    = "db.t3.medium"
+rds_allocated_storage = 100
+rds_engine_version    = "15.4"
+rds_db_name           = "sourcedb"
+rds_username          = "postgres"
+rds_password          = "ChangeMe123!"  # Use AWS Secrets Manager in production
+rds_multi_az          = false
+
+# Redshift Configuration (Target)
+redshift_node_type       = "dc2.large"
+redshift_number_of_nodes = 2
+redshift_database_name   = "targetdb"
+redshift_master_username = "admin"
+redshift_master_password = "ChangeMe123!"  # Use AWS Secrets Manager in production
+
+# DMS Configuration
+dms_instance_class        = "dms.t3.medium"
+dms_allocated_storage     = 100
+dms_engine_version        = "3.4.7"
+dms_multi_az              = false
+dms_replication_instance_id = "dms-replication-instance"
+
+# Tags
+tags = {
+  Project     = "DMS Migration"
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Owner       = "Data Team"
+}
